@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRM - Claro Terceirizada</title>
+  <title>Stage Telecom | CRM</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- TELA DE LOGIN -->
+  <!-- ========== TELA DE LOGIN ========== -->
   <div id="loginScreen" class="screen login-screen">
     <div class="login-wrapper">
-      <img src="https://i.imgur.com/SEU_LINK_AQUI.png" alt="Logo" class="logo">
+      <!-- Substitua pela logo da Stage Telecom no Imgur -->
+      <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" alt="Stage Telecom" class="logo">
       <div class="login-card">
-        <h2>Acessar o CRM</h2>
+        <h2>Stage Telecom</h2>
         <form id="loginForm">
           <div class="campo">
             <label for="usuario">Usuário</label>
@@ -30,29 +31,29 @@
     </div>
   </div>
 
-  <!-- PAINEL APÓS LOGIN -->
+  <!-- ========== PAINÉIS (ocultos até login) ========== -->
   <div id="appScreen" class="screen" style="display: none;">
 
-    <!-- PAINEL VENDEDOR (mantido básico) -->
+    <!-- PAINEL DO VENDEDOR -->
     <div id="painelVendedor" class="painel" style="display: none;">
       <header class="header-vendedor">
-        <h1>CRM - Vendedor</h1>
+        <h1>Stage Telecom</h1>
         <span id="relogioVendedor" class="relogio"></span>
         <button id="logoutVendedor" class="logoutBtn">Sair</button>
       </header>
       <div class="container">
         <nav class="sidebar">
           <ul>
-            <li><a href="#" data-section="home-vendedor" class="ativo">Home</a></li>
-            <li><a href="#" data-section="clientes">Clientes</a></li>
-            <li><a href="#" data-section="negocios">Negócios</a></li>
-            <li><a href="#" data-section="atividades">Atividades</a></li>
+            <li><a href="#" data-section="home-vendedor" class="ativo">🏠 Home</a></li>
+            <li><a href="#" data-section="clientes">👥 Clientes</a></li>
+            <li><a href="#" data-section="negocios">💰 Negócios</a></li>
+            <li><a href="#" data-section="atividades">📋 Atividades</a></li>
           </ul>
         </nav>
         <main class="content">
           <section id="secao-home-vendedor" class="secao ativa">
             <h2 id="bemVindoVendedor">Bem-vindo, Vendedor!</h2>
-            <p>Área do vendedor.</p>
+            <p>Use o menu para gerenciar seus clientes e negócios.</p>
           </section>
           <section id="secao-clientes" class="secao"><h2>Clientes</h2><p>Em breve.</p></section>
           <section id="secao-negocios" class="secao"><h2>Negócios</h2><p>Em breve.</p></section>
@@ -61,10 +62,10 @@
       </div>
     </div>
 
-    <!-- PAINEL ADMIN (NOVO) -->
+    <!-- PAINEL DO ADMIN -->
     <div id="painelAdmin" class="painel" style="display: none;">
       <header class="header-admin">
-        <h1>CRM - Administração</h1>
+        <h1>Stage Telecom | Admin</h1>
         <span id="relogioAdmin" class="relogio"></span>
         <button id="logoutAdmin" class="logoutBtn">Sair</button>
       </header>
@@ -92,7 +93,7 @@
 
         <!-- Conteúdo principal -->
         <main class="admin-content">
-          <!-- Home -->
+          <!-- Home Admin -->
           <section id="secao-home-admin" class="secao ativa">
             <h2>📊 Quadro Geral de Vendas</h2>
             <div class="cards-resumo">
@@ -165,8 +166,24 @@
           <section id="secao-relatorio-vendedor" class="secao">
             <h2>📊 Relatório de Vendas por Vendedor</h2>
             <div class="filtros-relatorio">
-              <select id="selectVendedorRelatorio"></select>
-              <select id="selectMesRelatorio"></select>
+              <select id="selectVendedorRelatorio">
+                <option value="">Selecione o vendedor</option>
+              </select>
+              <select id="selectMesRelatorio">
+                <option value="">Selecione o mês</option>
+                <option value="0">Janeiro</option>
+                <option value="1">Fevereiro</option>
+                <option value="2">Março</option>
+                <option value="3">Abril</option>
+                <option value="4">Maio</option>
+                <option value="5">Junho</option>
+                <option value="6">Julho</option>
+                <option value="7">Agosto</option>
+                <option value="8">Setembro</option>
+                <option value="9">Outubro</option>
+                <option value="10">Novembro</option>
+                <option value="11">Dezembro</option>
+              </select>
               <button id="btnGerarRelatorioVendedor" class="btn-novo">Gerar</button>
             </div>
             <div id="resultadoRelatorioVendedor" class="lista"></div>
@@ -176,7 +193,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADICIONAR VENDEDOR -->
+  <!-- MODAIS -->
   <div id="modalAdicionarVendedor" class="modal">
     <div class="modal-content">
       <span class="fechar-modal">&times;</span>
@@ -192,7 +209,6 @@
     </div>
   </div>
 
-  <!-- MODAL EXCLUIR VENDEDOR -->
   <div id="modalExcluirVendedor" class="modal">
     <div class="modal-content">
       <span class="fechar-modal">&times;</span>
