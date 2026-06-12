@@ -11,7 +11,6 @@
   <!-- ========== TELA DE LOGIN ========== -->
   <div id="loginScreen" class="screen login-screen">
     <div class="login-wrapper">
-      <!-- Substitua pela logo da Stage Telecom no Imgur -->
       <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" alt="Stage Telecom" class="logo">
       <div class="login-card">
         <h2>Stage Telecom</h2>
@@ -31,7 +30,7 @@
     </div>
   </div>
 
-  <!-- ========== PAINÉIS (ocultos até login) ========== -->
+  <!-- ========== PAINÉIS ========== -->
   <div id="appScreen" class="screen" style="display: none;">
 
     <!-- PAINEL DO VENDEDOR -->
@@ -45,19 +44,55 @@
         <nav class="sidebar">
           <ul>
             <li><a href="#" data-section="home-vendedor" class="ativo">🏠 Home</a></li>
-            <li><a href="#" data-section="clientes">👥 Clientes</a></li>
-            <li><a href="#" data-section="negocios">💰 Negócios</a></li>
-            <li><a href="#" data-section="atividades">📋 Atividades</a></li>
+            <li><a href="#" data-section="nova-venda">📝 Nova Venda</a></li>
+            <li><a href="#" data-section="minhas-vendas">📋 Minhas Vendas</a></li>
           </ul>
         </nav>
         <main class="content">
+          <!-- Home Vendedor -->
           <section id="secao-home-vendedor" class="secao ativa">
             <h2 id="bemVindoVendedor">Bem-vindo, Vendedor!</h2>
-            <p>Use o menu para gerenciar seus clientes e negócios.</p>
+            <p>Use o menu para enviar novas fichas de venda.</p>
           </section>
-          <section id="secao-clientes" class="secao"><h2>Clientes</h2><p>Em breve.</p></section>
-          <section id="secao-negocios" class="secao"><h2>Negócios</h2><p>Em breve.</p></section>
-          <section id="secao-atividades" class="secao"><h2>Atividades</h2><p>Em breve.</p></section>
+
+          <!-- Nova Venda (formulário completo) -->
+          <section id="secao-nova-venda" class="secao">
+            <h2>📝 Enviar Ficha de Venda</h2>
+            <form id="formNovaVenda" class="grid-detalhes">
+              <input type="text" id="nomeCliente" placeholder="Nome completo do cliente" required>
+              <input type="text" id="produtoVenda" placeholder="Produto" required>
+              <input type="text" id="cpfVenda" placeholder="CPF/CNPJ">
+              <input type="text" id="telefoneVenda" placeholder="Telefone">
+              <input type="text" id="whatsappVenda" placeholder="WhatsApp">
+              <input type="email" id="emailVenda" placeholder="Email">
+              <input type="text" id="cepVenda" placeholder="CEP">
+              <input type="text" id="ufVenda" placeholder="UF" maxlength="2">
+              <input type="text" id="enderecoVenda" placeholder="Endereço">
+              <input type="text" id="bairroVenda" placeholder="Bairro">
+              <input type="text" id="cidadeVenda" placeholder="Cidade">
+              <input type="text" id="numeroVenda" placeholder="N°">
+              <input type="text" id="complementoVenda" placeholder="Complemento">
+              <input type="text" id="referenciaVenda" placeholder="Referência">
+              <input type="text" id="valorVenda" placeholder="Valor">
+              <input type="text" id="velocidadeVenda" placeholder="Velocidade">
+              <input type="text" id="formaPagamentoVenda" placeholder="Forma de pagamento">
+              <input type="date" id="vencimentoVenda">
+              <input type="date" id="dataInstalacaoVenda">
+              <input type="text" id="contratoVenda" placeholder="Contrato">
+              <input type="text" id="tipoVendaVendedor" placeholder="Tipo de venda">
+              <input type="text" id="agendamentoVenda" placeholder="Agendamento">
+              <input type="text" id="planoVenda" placeholder="Plano">
+              <input type="date" id="dataAgVenda">
+              <textarea id="observacaoVenda" placeholder="Observação" rows="2"></textarea>
+              <button type="submit" class="btn-novo">Enviar Venda</button>
+            </form>
+          </section>
+
+          <!-- Minhas Vendas (lista simples) -->
+          <section id="secao-minhas-vendas" class="secao">
+            <h2>📋 Minhas Vendas Enviadas</h2>
+            <div id="listaMinhasVendas" class="lista"></div>
+          </section>
         </main>
       </div>
     </div>
@@ -70,14 +105,13 @@
         <button id="logoutAdmin" class="logoutBtn">Sair</button>
       </header>
       <div class="admin-layout">
-        <!-- Sidebar glass -->
         <nav class="sidebar-glass">
           <ul>
             <li><a href="#" data-section="home-admin" class="ativo">🏠 Home</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle">🛒 Vendas</a>
               <ul class="dropdown-menu">
-                <li><a href="#" data-section="ativar-venda">➕ Ativar Venda</a></li>
+                <li><a href="#" data-section="ativar-venda">📋 Ativar Venda</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -91,7 +125,6 @@
           </ul>
         </nav>
 
-        <!-- Conteúdo principal -->
         <main class="admin-content">
           <!-- Home Admin -->
           <section id="secao-home-admin" class="secao ativa">
@@ -110,56 +143,13 @@
             <div id="relatorioComparativo" class="relatorio-box" style="display:none;"></div>
           </section>
 
-          <!-- Ativar Venda -->
+          <!-- Ativar Venda (lista de fichas recebidas) -->
           <section id="secao-ativar-venda" class="secao">
-            <h2>🛒 Ativar Venda</h2>
-            <div class="data-grande" id="dataAtivacao"></div>
-            <form id="formAtivarVenda">
-              <div class="linha-rapida">
-                <select id="vendedorVenda" required>
-                  <option value="">Selecione o vendedor</option>
-                </select>
-                <input type="text" id="tipoVenda" placeholder="Tipo de venda" required>
-                <button type="button" id="lupaDetalhes" class="btn-lupa" title="Expandir detalhes">🔍</button>
-              </div>
-              <div id="detalhesVenda" style="display:none;" class="grid-detalhes">
-                <textarea placeholder="Observação" rows="2"></textarea>
-                <input type="text" placeholder="Status">
-                <input type="text" placeholder="Ativado por">
-                <input type="text" placeholder="Confirmado por">
-                <input type="text" placeholder="Aquisição">
-                <input type="text" placeholder="Viabilidade">
-                <input type="date" id="dataVenda">
-                <input type="text" placeholder="Equipe">
-                <input type="text" placeholder="Nome completo">
-                <input type="text" placeholder="Nome da mãe">
-                <input type="date" placeholder="Data de nascimento">
-                <input type="text" placeholder="CPF/CNPJ">
-                <input type="text" placeholder="Razão social">
-                <input type="email" placeholder="Email">
-                <input type="text" placeholder="CEP">
-                <input type="text" placeholder="UF" maxlength="2">
-                <input type="text" placeholder="Endereço">
-                <input type="text" placeholder="Bairro">
-                <input type="text" placeholder="Cidade">
-                <input type="text" placeholder="N°">
-                <input type="text" placeholder="Complemento">
-                <input type="text" placeholder="Referência">
-                <input type="tel" placeholder="Telefone">
-                <input type="tel" placeholder="WhatsApp">
-                <input type="text" placeholder="Valor">
-                <input type="text" placeholder="Velocidade">
-                <input type="text" placeholder="Forma de pagamento">
-                <input type="date" placeholder="Vencimento">
-                <input type="date" placeholder="Data instalação">
-                <input type="text" placeholder="Contrato">
-                <input type="text" placeholder="Tipo de venda">
-                <input type="text" placeholder="Agendamento">
-                <input type="text" placeholder="Plano">
-                <input type="date" placeholder="Data ag.">
-              </div>
-              <button type="submit" class="btn-novo">Salvar Venda</button>
-            </form>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h2>📋 Fichas de Venda Recebidas</h2>
+              <button id="btnGerenciarFlags" class="btn-novo">⚙️ Gerenciar Flags</button>
+            </div>
+            <div id="listaAtivarVendas" class="lista-vendas"></div>
           </section>
 
           <!-- Relatório por Vendedor -->
@@ -217,6 +207,35 @@
       <button id="btnConfirmarExclusao" class="btn-novo btn-excluir">Excluir</button>
       <p id="msgExclusao"></p>
     </div>
+  </div>
+
+  <!-- Modal de detalhes da venda (lupa) -->
+  <div id="modalDetalhesVenda" class="modal">
+    <div class="modal-content modal-grande">
+      <span class="fechar-modal">&times;</span>
+      <h2>Detalhes da Venda</h2>
+      <div id="conteudoDetalhesVenda" class="grid-detalhes-modal"></div>
+    </div>
+  </div>
+
+  <!-- Modal de gerenciamento de flags -->
+  <div id="modalGerenciarFlags" class="modal">
+    <div class="modal-content">
+      <span class="fechar-modal">&times;</span>
+      <h2>Gerenciar Flags de Status</h2>
+      <div id="listaFlags" class="lista"></div>
+      <form id="formNovaFlag" style="margin-top: 15px;">
+        <input type="text" id="novaFlagNome" placeholder="Nome da flag" required>
+        <input type="color" id="novaFlagCor" value="#c62828" required>
+        <button type="submit" class="btn-novo">Adicionar Flag</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast de notificação (nova venda) -->
+  <div id="toastNotificacao" class="toast-notificacao">
+    <span id="toastMensagem">🎉 Uma nova venda foi adicionada!</span>
+    <button id="fecharToast" class="fechar-toast">&times;</button>
   </div>
 
   <script src="js/app.js"></script>
