@@ -123,11 +123,11 @@ header {
 }
 
 .header-vendedor {
-  background: #c62828; /* vermelho padrão */
+  background: #c62828;
 }
 
 .header-admin {
-  background: #1a1a1a; /* tom escuro para diferenciar */
+  background: #1a1a1a;
 }
 
 header h1 {
@@ -161,7 +161,7 @@ header h1 {
 }
 
 .sidebar-admin {
-  background: #f9f9f9; /* leve diferença */
+  background: #f9f9f9;
 }
 
 .sidebar ul {
@@ -225,7 +225,6 @@ header h1 {
   background: #b71c1c;
 }
 
-/* Cores diferentes para botões do admin (opcional) */
 .header-admin ~ .container .btn-novo {
   background: #1a1a1a;
 }
