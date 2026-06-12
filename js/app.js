@@ -19,6 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('vendedores', JSON.stringify(vendedoresIniciais));
     localStorage.setItem('lixeira', JSON.stringify([]));
     localStorage.setItem('vendas', JSON.stringify([]));
+    localStorage.setItem('flags', JSON.stringify([
+      { nome: 'Pendente', cor: '#ffc107' },
+      { nome: 'Aprovado', cor: '#4caf50' },
+      { nome: 'Cancelado', cor: '#f44336' }
+    ]));
   }
 
   function getVendedores() { return JSON.parse(localStorage.getItem('vendedores')) || []; }
@@ -27,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function salvarLixeira(arr) { localStorage.setItem('lixeira', JSON.stringify(arr)); }
   function getVendas() { return JSON.parse(localStorage.getItem('vendas')) || []; }
   function salvarVendas(arr) { localStorage.setItem('vendas', JSON.stringify(arr)); }
+  function getFlags() { return JSON.parse(localStorage.getItem('flags')) || []; }
+  function salvarFlags(arr) { localStorage.setItem('flags', JSON.stringify(arr)); }
 
   // ========== RELÓGIO ==========
   function atualizarRelogios() {
@@ -71,6 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
           painelAdmin.style.display = 'none';
           painelVendedor.style.display = 'block';
           document.getElementById('bemVindoVendedor').textContent = `Bem-vindo, ${encontrado.nome}!`;
+          // Armazenar usuário logado para envio de vendas
+          localStorage.setItem('usuarioLogado', JSON.stringify(encontrado));
+          carregarTelaVendedor();
         }
       } else {
         loginMsg.textContent = 'Usuário ou senha inválidos.';
@@ -91,37 +101,114 @@ document.addEventListener('DOMContentLoaded', () => {
     loginScreen.style.display = 'block';
     loginForm.reset();
     loginMsg.textContent = '';
+    localStorage.removeItem('usuarioLogado');
   }
 
-  // ========== CONFIGURAÇÕES DO PAINEL ADMIN ==========
+  // ========== TELA DO VENDEDOR ==========
+  function carregarTelaVendedor() {
+    // Navegação entre seções
+    document.querySelectorAll('#painelVendedor .sidebar a[data-section]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const secaoId = link.getAttribute('data-section');
+        document.querySelectorAll('#painelVendedor .secao').forEach(s => s.classList.remove('ativa'));
+        document.getElementById(`secao-${secaoId}`).classList.add('ativa');
+        // Atualizar link ativo
+        document.querySelectorAll('#painelVendedor .sidebar a').forEach(a => a.classList.remove('ativo'));
+        link.classList.add('ativo');
+      });
+    });
+
+    // Formulário de nova venda
+    document.getElementById('formNovaVenda').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (!usuarioLogado) return alert('Erro: usuário não identificado.');
+      const novaVenda = {
+        id: Date.now(),
+        vendedorId: usuarioLogado.id,
+        vendedorNome: usuarioLogado.nome,
+        data: new Date().toISOString().split('T')[0],
+        hora: new Date().toLocaleTimeString('pt-BR'),
+        nomeCliente: document.getElementById('nomeCliente').value,
+        produto: document.getElementById('produtoVenda').value,
+        cpf: document.getElementById('cpfVenda').value,
+        telefone: document.getElementById('telefoneVenda').value,
+        whatsapp: document.getElementById('whatsappVenda').value,
+        email: document.getElementById('emailVenda').value,
+        cep: document.getElementById('cepVenda').value,
+        uf: document.getElementById('ufVenda').value,
+        endereco: document.getElementById('enderecoVenda').value,
+        bairro: document.getElementById('bairroVenda').value,
+        cidade: document.getElementById('cidadeVenda').value,
+        numero: document.getElementById('numeroVenda').value,
+        complemento: document.getElementById('complementoVenda').value,
+        referencia: document.getElementById('referenciaVenda').value,
+        valor: document.getElementById('valorVenda').value,
+        velocidade: document.getElementById('velocidadeVenda').value,
+        formaPagamento: document.getElementById('formaPagamentoVenda').value,
+        vencimento: document.getElementById('vencimentoVenda').value,
+        dataInstalacao: document.getElementById('dataInstalacaoVenda').value,
+        contrato: document.getElementById('contratoVenda').value,
+        tipoVenda: document.getElementById('tipoVendaVendedor').value,
+        agendamento: document.getElementById('agendamentoVenda').value,
+        plano: document.getElementById('planoVenda').value,
+        dataAg: document.getElementById('dataAgVenda').value,
+        observacao: document.getElementById('observacaoVenda').value,
+        status: 'Pendente', // padrão
+        notificada: false
+      };
+      const vendas = getVendas();
+      vendas.push(novaVenda);
+      salvarVendas(vendas);
+      alert('Venda enviada com sucesso!');
+      this.reset();
+      // Disparar evento storage manualmente para notificar admin na mesma aba
+      window.dispatchEvent(new StorageEvent('storage', { key: 'vendas', newValue: JSON.stringify(vendas), oldValue: null }));
+    });
+  }
+
+  // ========== TELA DO ADMIN ==========
   function carregarTelaAdmin() {
     atualizarSelectVendedores();
     atualizarQuadroGeral();
-    document.getElementById('dataAtivacao').textContent = new Date().toLocaleDateString('pt-BR');
+    configurarNavegacaoAdmin();
+    configurarDropdowns();
+    configurarBotoesAdmin();
+    configurarStorageListener();
+    carregarListaAtivarVendas();
+  }
 
+  function configurarNavegacaoAdmin() {
     document.querySelectorAll('.sidebar-glass a[data-section]').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const secaoId = link.getAttribute('data-section');
         document.querySelectorAll('.admin-content .secao').forEach(s => s.classList.remove('ativa'));
         const secao = document.getElementById(`secao-${secaoId}`);
-        if (secao) secao.classList.add('ativa');
+        if (secao) {
+          secao.classList.add('ativa');
+          if (secaoId === 'ativar-venda') {
+            carregarListaAtivarVendas();
+          }
+        }
         link.closest('.dropdown')?.classList.remove('open');
       });
     });
+  }
 
+  function configurarDropdowns() {
     document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
       toggle.addEventListener('click', (e) => {
         e.preventDefault();
         toggle.parentElement.classList.toggle('open');
       });
     });
+  }
 
+  function configurarBotoesAdmin() {
     document.getElementById('btnRelatorioComparativo').addEventListener('click', abrirRelatorioComparativo);
-    document.getElementById('lupaDetalhes').addEventListener('click', () => {
-      document.getElementById('detalhesVenda').style.display = 'block';
-    });
-    document.getElementById('formAtivarVenda').addEventListener('submit', salvarVenda);
+    document.getElementById('btnGerenciarFlags').addEventListener('click', abrirModalGerenciarFlags);
     document.getElementById('btnAdicionarVendedor').addEventListener('click', () => abrirModal('modalAdicionarVendedor'));
     document.getElementById('formAdicionarVendedor').addEventListener('submit', adicionarVendedor);
     document.getElementById('btnExcluirVendedor').addEventListener('click', abrirModalExcluir);
@@ -129,11 +216,129 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fechar-modal').forEach(btn => btn.addEventListener('click', fecharModais));
     window.onclick = (event) => { if (event.target.classList.contains('modal')) fecharModais(); };
     document.getElementById('btnGerarRelatorioVendedor').addEventListener('click', gerarRelatorioVendedor);
+    document.getElementById('fecharToast').addEventListener('click', () => {
+      document.getElementById('toastNotificacao').style.display = 'none';
+    });
   }
+
+  function configurarStorageListener() {
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'vendas') {
+        const vendasNovas = JSON.parse(e.newValue || '[]');
+        const vendasAntigas = JSON.parse(e.oldValue || '[]');
+        if (vendasNovas.length > vendasAntigas.length) {
+          // Nova venda adicionada
+          mostrarNotificacao();
+          if (document.getElementById('secao-ativar-venda').classList.contains('ativa')) {
+            carregarListaAtivarVendas();
+          }
+        }
+        atualizarQuadroGeral();
+      }
+    });
+  }
+
+  function mostrarNotificacao() {
+    const toast = document.getElementById('toastNotificacao');
+    toast.style.display = 'flex';
+    toast.style.animation = 'none';
+    toast.offsetHeight; // reflow
+    toast.style.animation = 'slideUp 0.5s ease';
+    // Esconder automaticamente após 8 segundos
+    clearTimeout(window.toastTimeout);
+    window.toastTimeout = setTimeout(() => {
+      toast.style.display = 'none';
+    }, 8000);
+  }
+
+  function carregarListaAtivarVendas() {
+    const vendas = getVendas();
+    const container = document.getElementById('listaAtivarVendas');
+    const flags = getFlags();
+    container.innerHTML = vendas.map(venda => {
+      const statusOptions = flags.map(flag => `<option value="${flag.nome}" ${venda.status === flag.nome ? 'selected' : ''}>${flag.nome}</option>`).join('');
+      const balao = (!venda.notificada) ? '<span class="nova-venda-balao">NOVA VENDA</span>' : '';
+      return `
+        <div class="venda-item" data-id="${venda.id}">
+          ${balao}
+          <div class="venda-info"><strong>Data:</strong> ${venda.data} ${venda.hora}</div>
+          <div class="venda-info"><strong>Vendedor:</strong> ${venda.vendedorNome}</div>
+          <div class="venda-info"><strong>Cliente:</strong> ${venda.nomeCliente}</div>
+          <div class="venda-info"><strong>Produto:</strong> ${venda.produto}</div>
+          <select class="status-select" onchange="atualizarStatusVenda(${venda.id}, this.value)">
+            ${statusOptions}
+          </select>
+          <button class="btn-lupa" onclick="abrirDetalhesVenda(${venda.id})">🔍</button>
+        </div>
+      `;
+    }).join('');
+
+    // Marcar todas como notificadas
+    vendas.forEach(v => v.notificada = true);
+    salvarVendas(vendas);
+  }
+
+  window.atualizarStatusVenda = function(id, novoStatus) {
+    const vendas = getVendas();
+    const venda = vendas.find(v => v.id == id);
+    if (venda) {
+      venda.status = novoStatus;
+      salvarVendas(vendas);
+    }
+  };
+
+  window.abrirDetalhesVenda = function(id) {
+    const vendas = getVendas();
+    const venda = vendas.find(v => v.id == id);
+    if (!venda) return;
+    const conteudo = document.getElementById('conteudoDetalhesVenda');
+    conteudo.innerHTML = Object.entries(venda).map(([chave, valor]) => {
+      if (['id', 'vendedorId', 'notificada'].includes(chave)) return '';
+      return `<div><strong>${chave}:</strong> ${valor || '-'}</div>`;
+    }).join('');
+    abrirModal('modalDetalhesVenda');
+  };
+
+  function abrirModalGerenciarFlags() {
+    document.getElementById('modalGerenciarFlags').style.display = 'flex';
+    renderizarListaFlags();
+  }
+
+  function renderizarListaFlags() {
+    const flags = getFlags();
+    const container = document.getElementById('listaFlags');
+    container.innerHTML = flags.map(f => `
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+        <span style="background:${f.cor}; width:20px; height:20px; border-radius:50%;"></span>
+        <span>${f.nome}</span>
+        <button class="btn-excluir" onclick="excluirFlag('${f.nome}')">Excluir</button>
+      </div>
+    `).join('');
+  }
+
+  window.excluirFlag = function(nome) {
+    let flags = getFlags();
+    flags = flags.filter(f => f.nome !== nome);
+    salvarFlags(flags);
+    renderizarListaFlags();
+  };
+
+  document.getElementById('formNovaFlag').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nome = document.getElementById('novaFlagNome').value.trim();
+    const cor = document.getElementById('novaFlagCor').value;
+    if (!nome) return;
+    let flags = getFlags();
+    if (flags.find(f => f.nome === nome)) return alert('Flag já existe.');
+    flags.push({ nome, cor });
+    salvarFlags(flags);
+    renderizarListaFlags();
+    this.reset();
+  });
 
   function atualizarSelectVendedores() {
     const vendedores = getVendedores().filter(v => v.role === 'vendedor');
-    const selects = ['vendedorVenda', 'selectVendedorRelatorio', 'selectExcluirVendedor'];
+    const selects = ['selectVendedorRelatorio', 'selectExcluirVendedor'];
     selects.forEach(id => {
       const sel = document.getElementById(id);
       if (sel) {
@@ -146,33 +351,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function atualizarQuadroGeral() {
     const vendas = getVendas();
     const hoje = new Date().toISOString().split('T')[0];
-    const vendasHoje = vendas.filter(v => v.data.startsWith(hoje));
+    const vendasHoje = vendas.filter(v => v.data === hoje);
     document.getElementById('totalVendasHoje').textContent = vendasHoje.length;
 
     const ranking = {};
     vendasHoje.forEach(v => {
-      const vendedor = getVendedores().find(vend => vend.id == v.vendedorId);
-      const nome = vendedor ? vendedor.nome : 'Desconhecido';
+      const nome = v.vendedorNome || 'Desconhecido';
       ranking[nome] = (ranking[nome] || 0) + 1;
     });
     const sorted = Object.entries(ranking).sort((a, b) => b[1] - a[1]).slice(0, 3);
     const ol = document.getElementById('rankingVendedores');
     ol.innerHTML = sorted.length ? sorted.map(([nome, qtd]) => `<li>${nome}: ${qtd} venda(s)</li>`).join('') : '<li>Nenhuma venda hoje</li>';
-  }
-
-  function salvarVenda(e) {
-    e.preventDefault();
-    const vendedorId = document.getElementById('vendedorVenda').value;
-    if (!vendedorId) return alert('Selecione um vendedor.');
-    const data = document.getElementById('dataVenda').value || new Date().toISOString().split('T')[0];
-    const novaVenda = { id: Date.now(), vendedorId, tipo: document.getElementById('tipoVenda').value, data };
-    const vendas = getVendas();
-    vendas.push(novaVenda);
-    salvarVendas(vendas);
-    alert('Venda registrada!');
-    e.target.reset();
-    document.getElementById('detalhesVenda').style.display = 'none';
-    atualizarQuadroGeral();
   }
 
   function abrirRelatorioComparativo() {
@@ -269,11 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return data.getMonth() == mes && data.getFullYear() == new Date().getFullYear();
     });
     const div = document.getElementById('resultadoRelatorioVendedor');
-    div.innerHTML = vendas.length ? `<ul>${vendas.map(v => `<li>${v.data} - ${v.tipo}</li>`).join('')}</ul>` : '<p>Nenhuma venda encontrada.</p>';
+    div.innerHTML = vendas.length ? `<ul>${vendas.map(v => `<li>${v.data} - ${v.nomeCliente} - ${v.produto}</li>`).join('')}</ul>` : '<p>Nenhuma venda encontrada.</p>';
   }
 
   function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
   function fecharModais() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-
-  console.log('Stage Telecom pronto.');
 });
