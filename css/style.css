@@ -431,48 +431,16 @@ header h1 {
 }
 
 /* ========== FORMULÁRIOS ========== */
-.data-grande {
-  font-size: 2.5em;
-  font-weight: 700;
-  color: #c62828;
-  margin: 20px 0;
-  text-align: center;
-  text-shadow: 0 2px 10px rgba(198,40,40,0.1);
-}
-
-.linha-rapida {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.linha-rapida select,
-.linha-rapida input {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 14px;
-  flex: 1 1 180px;
-  background: white;
-  transition: 0.2s;
-}
-
-.linha-rapida select:focus,
-.linha-rapida input:focus {
-  border-color: #c62828;
-  box-shadow: 0 0 0 3px rgba(198,40,40,0.1);
-}
-
 .grid-detalhes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
   margin: 20px 0;
 }
 
 .grid-detalhes input,
-.grid-detalhes textarea {
+.grid-detalhes textarea,
+.grid-detalhes select {
   padding: 12px;
   border: 1px solid #eee;
   border-radius: 12px;
@@ -481,38 +449,87 @@ header h1 {
 }
 
 .grid-detalhes input:focus,
-.grid-detalhes textarea:focus {
+.grid-detalhes textarea:focus,
+.grid-detalhes select:focus {
   border-color: #c62828;
   box-shadow: 0 0 0 3px rgba(198,40,40,0.05);
+  outline: none;
 }
 
-.filtros-relatorio {
+.grid-detalhes textarea {
+  grid-column: span 2;
+}
+
+/* ========== LISTA DE VENDAS (ATIVAR VENDA) ========== */
+.lista-vendas {
   display: flex;
-  gap: 12px;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.filtros-relatorio select {
-  padding: 12px 16px;
-  border-radius: 14px;
-  border: 1px solid #ddd;
-}
-
-/* ========== RELATÓRIO COMPARATIVO ========== */
-.relatorio-box {
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(10px);
-  padding: 25px;
-  border-radius: 24px;
+  flex-direction: column;
+  gap: 15px;
   margin-top: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.relatorio-box button {
-  margin-right: 12px;
-  margin-bottom: 12px;
+.venda-item {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(5px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  border-left: 5px solid #c62828;
+  position: relative;
+}
+
+.venda-item .nova-venda-balao {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #ffc107;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.venda-item .venda-info {
+  flex: 1;
+  min-width: 120px;
+}
+
+.venda-item .venda-info span {
+  display: block;
+  font-size: 14px;
+  color: #555;
+}
+
+.venda-item .venda-info strong {
+  color: #222;
+}
+
+.venda-item .status-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  font-weight: 500;
+}
+
+.venda-item .btn-lupa {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
 }
 
 /* ========== MODAL ========== */
@@ -535,10 +552,23 @@ header h1 {
   padding: 30px;
   border-radius: 24px;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   position: relative;
   box-shadow: 0 20px 50px rgba(0,0,0,0.3);
   animation: modalIn 0.3s ease;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-grande {
+  max-width: 800px;
+}
+
+.grid-detalhes-modal {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
 }
 
 @keyframes modalIn {
@@ -565,7 +595,39 @@ header h1 {
   border-radius: 12px;
 }
 
-/* ========== LISTA & TABELAS ========== */
+/* ========== TOAST NOTIFICAÇÃO ========== */
+.toast-notificacao {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 300;
+  font-weight: 600;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.fechar-toast {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* ========== LISTA E TABELAS ========== */
 .lista {
   background: white;
   padding: 20px;
