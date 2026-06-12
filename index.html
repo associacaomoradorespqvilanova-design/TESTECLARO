@@ -11,7 +11,7 @@
   <!-- ========== TELA DE LOGIN ========== -->
   <div id="loginScreen" class="screen login-screen">
     <div class="login-wrapper">
-      <!-- Substitua o src pelo seu link do Imgur -->
+      <!-- Substitua pelo link da sua logo no Imgur -->
       <img src="https://i.imgur.com/SEU_LINK_AQUI.png" alt="Logo" class="logo">
       <div class="login-card">
         <h2>Acessar o CRM</h2>
@@ -31,58 +31,99 @@
     </div>
   </div>
 
-  <!-- ========== PAINEL DO CRM ========== -->
+  <!-- ========== CONTAINER DOS PAINÉIS (oculto até login) ========== -->
   <div id="appScreen" class="screen" style="display: none;">
-    <header>
-      <h1>CRM Empresa</h1>
-      <button id="logoutBtn">Sair</button>
-    </header>
 
-    <div class="container">
-      <nav class="sidebar">
-        <ul>
-          <li><a href="#" data-section="home" class="ativo">Home</a></li>
-          <li><a href="#" data-section="clientes">Clientes</a></li>
-          <li><a href="#" data-section="negocios">Negócios</a></li>
-          <li><a href="#" data-section="atividades">Atividades</a></li>
-        </ul>
-      </nav>
-
-      <main class="content">
-        <!-- Seção Home (boas-vindas) -->
-        <section id="secao-home" class="secao ativa">
-          <h2 id="bemVindoMsg">Bem-vindo!</h2>
-          <p>Use o menu lateral para navegar pelo CRM.</p>
-        </section>
-
-        <!-- Seção de Clientes -->
-        <section id="secao-clientes" class="secao">
-          <h2>Clientes</h2>
-          <div class="lista" id="listaClientes">
-            <p>Nenhum cliente cadastrado.</p>
-          </div>
-          <button class="btn-novo">+ Novo Cliente</button>
-        </section>
-
-        <!-- Seção de Negócios -->
-        <section id="secao-negocios" class="secao">
-          <h2>Negócios</h2>
-          <div class="lista" id="listaNegocios">
-            <p>Nenhum negócio cadastrado.</p>
-          </div>
-          <button class="btn-novo">+ Novo Negócio</button>
-        </section>
-
-        <!-- Seção de Atividades -->
-        <section id="secao-atividades" class="secao">
-          <h2>Atividades</h2>
-          <div class="lista" id="listaAtividades">
-            <p>Nenhuma atividade registrada.</p>
-          </div>
-          <button class="btn-novo">+ Nova Atividade</button>
-        </section>
-      </main>
+    <!-- ========== PAINEL DO VENDEDOR ========== -->
+    <div id="painelVendedor" class="painel" style="display: none;">
+      <header class="header-vendedor">
+        <h1>CRM - Área do Vendedor</h1>
+        <button id="logoutVendedor" class="logoutBtn">Sair</button>
+      </header>
+      <div class="container">
+        <nav class="sidebar">
+          <ul>
+            <li><a href="#" data-section="home-vendedor" class="ativo">Home</a></li>
+            <li><a href="#" data-section="clientes">Clientes</a></li>
+            <li><a href="#" data-section="negocios">Negócios</a></li>
+            <li><a href="#" data-section="atividades">Atividades</a></li>
+          </ul>
+        </nav>
+        <main class="content">
+          <section id="secao-home-vendedor" class="secao ativa">
+            <h2 id="bemVindoVendedor">Bem-vindo, Vendedor!</h2>
+            <p>Use o menu para gerenciar seus clientes e negócios.</p>
+          </section>
+          <section id="secao-clientes" class="secao">
+            <h2>Clientes</h2>
+            <div class="lista"><p>Nenhum cliente cadastrado.</p></div>
+            <button class="btn-novo">+ Novo Cliente</button>
+          </section>
+          <section id="secao-negocios" class="secao">
+            <h2>Negócios</h2>
+            <div class="lista"><p>Nenhum negócio cadastrado.</p></div>
+            <button class="btn-novo">+ Novo Negócio</button>
+          </section>
+          <section id="secao-atividades" class="secao">
+            <h2>Atividades</h2>
+            <div class="lista"><p>Nenhuma atividade registrada.</p></div>
+            <button class="btn-novo">+ Nova Atividade</button>
+          </section>
+        </main>
+      </div>
     </div>
+
+    <!-- ========== PAINEL DO ADMINISTRADOR ========== -->
+    <div id="painelAdmin" class="painel" style="display: none;">
+      <header class="header-admin">
+        <h1>CRM - Administração</h1>
+        <button id="logoutAdmin" class="logoutBtn">Sair</button>
+      </header>
+      <div class="container">
+        <nav class="sidebar sidebar-admin">
+          <ul>
+            <li><a href="#" data-section="home-admin" class="ativo">Home</a></li>
+            <li><a href="#" data-section="usuarios">Usuários</a></li>
+            <li><a href="#" data-section="relatorios">Relatórios</a></li>
+            <li><a href="#" data-section="clientes-admin">Clientes</a></li>
+            <li><a href="#" data-section="negocios-admin">Negócios</a></li>
+            <li><a href="#" data-section="atividades-admin">Atividades</a></li>
+          </ul>
+        </nav>
+        <main class="content">
+          <section id="secao-home-admin" class="secao ativa">
+            <h2 id="bemVindoAdmin">Bem-vindo, Admin!</h2>
+            <p>Gerencie o sistema e acompanhe as vendas.</p>
+          </section>
+          <section id="secao-usuarios" class="secao">
+            <h2>Usuários</h2>
+            <div class="lista"><p>Nenhum usuário cadastrado.</p></div>
+            <button class="btn-novo">+ Novo Usuário</button>
+          </section>
+          <section id="secao-relatorios" class="secao">
+            <h2>Relatórios</h2>
+            <div class="lista"><p>Nenhum relatório gerado.</p></div>
+            <button class="btn-novo">+ Gerar Relatório</button>
+          </section>
+          <section id="secao-clientes-admin" class="secao">
+            <h2>Clientes</h2>
+            <div class="lista"><p>Nenhum cliente cadastrado.</p></div>
+            <button class="btn-novo">+ Novo Cliente</button>
+          </section>
+          <section id="secao-negocios-admin" class="secao">
+            <h2>Negócios</h2>
+            <div class="lista"><p>Nenhum negócio cadastrado.</p></div>
+            <button class="btn-novo">+ Novo Negócio</button>
+          </section>
+          <section id="secao-atividades-admin" class="secao">
+            <h2>Atividades</h2>
+            <div class="lista"><p>Nenhuma atividade registrada.</p></div>
+            <button class="btn-novo">+ Nova Atividade</button>
+          </section>
+        </main>
+      </div>
+    </div>
+
   </div>
 
   <script src="js/app.js"></script>
