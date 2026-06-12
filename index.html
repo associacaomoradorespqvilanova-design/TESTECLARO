@@ -11,7 +11,7 @@
   <!-- ========== TELA DE LOGIN ========== -->
   <div id="loginScreen" class="screen login-screen">
     <div class="login-wrapper">
-      <!-- Logo: substitua o src pelo link do Imgur -->
+      <!-- Substitua o src pelo seu link do Imgur -->
       <img src="https://i.imgur.com/SEU_LINK_AQUI.png" alt="Logo" class="logo">
       <div class="login-card">
         <h2>Acessar o CRM</h2>
@@ -41,15 +41,22 @@
     <div class="container">
       <nav class="sidebar">
         <ul>
-          <li><a href="#" data-section="clientes" class="ativo">Clientes</a></li>
+          <li><a href="#" data-section="home" class="ativo">Home</a></li>
+          <li><a href="#" data-section="clientes">Clientes</a></li>
           <li><a href="#" data-section="negocios">Negócios</a></li>
           <li><a href="#" data-section="atividades">Atividades</a></li>
         </ul>
       </nav>
 
       <main class="content">
+        <!-- Seção Home (boas-vindas) -->
+        <section id="secao-home" class="secao ativa">
+          <h2 id="bemVindoMsg">Bem-vindo!</h2>
+          <p>Use o menu lateral para navegar pelo CRM.</p>
+        </section>
+
         <!-- Seção de Clientes -->
-        <section id="secao-clientes" class="secao ativa">
+        <section id="secao-clientes" class="secao">
           <h2>Clientes</h2>
           <div class="lista" id="listaClientes">
             <p>Nenhum cliente cadastrado.</p>
