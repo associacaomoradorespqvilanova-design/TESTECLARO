@@ -113,9 +113,8 @@ body {
   font-weight: 500;
 }
 
-/* ========== PAINEL DO CRM ========== */
+/* ========== PAINÉIS (VENDEDOR E ADMIN) ========== */
 header {
-  background: #c62828;
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -123,11 +122,19 @@ header {
   align-items: center;
 }
 
+.header-vendedor {
+  background: #c62828; /* vermelho padrão */
+}
+
+.header-admin {
+  background: #1a1a1a; /* tom escuro para diferenciar */
+}
+
 header h1 {
   font-size: 22px;
 }
 
-#logoutBtn {
+.logoutBtn {
   background: white;
   color: #c62828;
   border: none;
@@ -135,6 +142,10 @@ header h1 {
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+}
+
+.header-admin .logoutBtn {
+  color: #1a1a1a;
 }
 
 .container {
@@ -147,6 +158,10 @@ header h1 {
   background: #fff;
   border-right: 1px solid #ddd;
   padding: 20px 0;
+}
+
+.sidebar-admin {
+  background: #f9f9f9; /* leve diferença */
 }
 
 .sidebar ul {
@@ -166,6 +181,12 @@ header h1 {
   background: #ffebee;
   color: #c62828;
   font-weight: bold;
+}
+
+.sidebar-admin li a:hover,
+.sidebar-admin li a.ativo {
+  background: #333;
+  color: #fff;
 }
 
 .content {
@@ -202,4 +223,13 @@ header h1 {
 
 .btn-novo:hover {
   background: #b71c1c;
+}
+
+/* Cores diferentes para botões do admin (opcional) */
+.header-admin ~ .container .btn-novo {
+  background: #1a1a1a;
+}
+
+.header-admin ~ .container .btn-novo:hover {
+  background: #333;
 }
