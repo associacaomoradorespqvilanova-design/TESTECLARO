@@ -8,10 +8,9 @@
 </head>
 <body>
 
-  <!-- ========== TELA DE LOGIN ========== -->
+  <!-- TELA DE LOGIN -->
   <div id="loginScreen" class="screen login-screen">
     <div class="login-wrapper">
-      <!-- Substitua pelo link da sua logo no Imgur -->
       <img src="https://i.imgur.com/SEU_LINK_AQUI.png" alt="Logo" class="logo">
       <div class="login-card">
         <h2>Acessar o CRM</h2>
@@ -31,13 +30,14 @@
     </div>
   </div>
 
-  <!-- ========== CONTAINER DOS PAINÉIS ========== -->
+  <!-- PAINEL APÓS LOGIN -->
   <div id="appScreen" class="screen" style="display: none;">
 
-    <!-- ========== PAINEL DO VENDEDOR ========== -->
+    <!-- PAINEL VENDEDOR (mantido básico) -->
     <div id="painelVendedor" class="painel" style="display: none;">
       <header class="header-vendedor">
-        <h1>CRM - Área do Vendedor</h1>
+        <h1>CRM - Vendedor</h1>
+        <span id="relogioVendedor" class="relogio"></span>
         <button id="logoutVendedor" class="logoutBtn">Sair</button>
       </header>
       <div class="container">
@@ -52,78 +52,155 @@
         <main class="content">
           <section id="secao-home-vendedor" class="secao ativa">
             <h2 id="bemVindoVendedor">Bem-vindo, Vendedor!</h2>
-            <p>Use o menu para gerenciar seus clientes e negócios.</p>
+            <p>Área do vendedor.</p>
           </section>
-          <section id="secao-clientes" class="secao">
-            <h2>Clientes</h2>
-            <div class="lista"><p>Nenhum cliente cadastrado.</p></div>
-            <button class="btn-novo">+ Novo Cliente</button>
-          </section>
-          <section id="secao-negocios" class="secao">
-            <h2>Negócios</h2>
-            <div class="lista"><p>Nenhum negócio cadastrado.</p></div>
-            <button class="btn-novo">+ Novo Negócio</button>
-          </section>
-          <section id="secao-atividades" class="secao">
-            <h2>Atividades</h2>
-            <div class="lista"><p>Nenhuma atividade registrada.</p></div>
-            <button class="btn-novo">+ Nova Atividade</button>
-          </section>
+          <section id="secao-clientes" class="secao"><h2>Clientes</h2><p>Em breve.</p></section>
+          <section id="secao-negocios" class="secao"><h2>Negócios</h2><p>Em breve.</p></section>
+          <section id="secao-atividades" class="secao"><h2>Atividades</h2><p>Em breve.</p></section>
         </main>
       </div>
     </div>
 
-    <!-- ========== PAINEL DO ADMIN ========== -->
+    <!-- PAINEL ADMIN (NOVO) -->
     <div id="painelAdmin" class="painel" style="display: none;">
       <header class="header-admin">
         <h1>CRM - Administração</h1>
+        <span id="relogioAdmin" class="relogio"></span>
         <button id="logoutAdmin" class="logoutBtn">Sair</button>
       </header>
-      <div class="container">
-        <nav class="sidebar sidebar-admin">
+      <div class="admin-layout">
+        <!-- Sidebar glass -->
+        <nav class="sidebar-glass">
           <ul>
-            <li><a href="#" data-section="home-admin" class="ativo">Home</a></li>
-            <li><a href="#" data-section="usuarios">Usuários</a></li>
-            <li><a href="#" data-section="relatorios">Relatórios</a></li>
-            <li><a href="#" data-section="clientes-admin">Clientes</a></li>
-            <li><a href="#" data-section="negocios-admin">Negócios</a></li>
-            <li><a href="#" data-section="atividades-admin">Atividades</a></li>
+            <li><a href="#" data-section="home-admin" class="ativo">🏠 Home</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">🛒 Vendas</a>
+              <ul class="dropdown-menu">
+                <li><a href="#" data-section="ativar-venda">➕ Ativar Venda</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">👥 Vendedores</a>
+              <ul class="dropdown-menu">
+                <li><a href="#" data-section="relatorio-vendedor">📊 Relatório por Vendedor</a></li>
+                <li><a href="#" id="btnAdicionarVendedor">➕ Adicionar Vendedor</a></li>
+                <li><a href="#" id="btnExcluirVendedor">❌ Excluir Vendedor</a></li>
+              </ul>
+            </li>
           </ul>
         </nav>
-        <main class="content">
+
+        <!-- Conteúdo principal -->
+        <main class="admin-content">
+          <!-- Home -->
           <section id="secao-home-admin" class="secao ativa">
-            <h2 id="bemVindoAdmin">Bem-vindo, Admin!</h2>
-            <p>Gerencie o sistema e acompanhe as vendas.</p>
+            <h2>📊 Quadro Geral de Vendas</h2>
+            <div class="cards-resumo">
+              <div class="card">
+                <h3>Vendas Ativadas Hoje</h3>
+                <span id="totalVendasHoje">0</span>
+              </div>
+              <div class="card">
+                <h3>Ranking de Vendedores (Hoje)</h3>
+                <ol id="rankingVendedores"></ol>
+              </div>
+            </div>
+            <button id="btnRelatorioComparativo" class="btn-novo">📈 Relatório Comparativo</button>
+            <div id="relatorioComparativo" class="relatorio-box" style="display:none;"></div>
           </section>
-          <section id="secao-usuarios" class="secao">
-            <h2>Usuários</h2>
-            <div class="lista"><p>Nenhum usuário cadastrado.</p></div>
-            <button class="btn-novo">+ Novo Usuário</button>
+
+          <!-- Ativar Venda -->
+          <section id="secao-ativar-venda" class="secao">
+            <h2>🛒 Ativar Venda</h2>
+            <div class="data-grande" id="dataAtivacao"></div>
+            <form id="formAtivarVenda">
+              <div class="linha-rapida">
+                <select id="vendedorVenda" required>
+                  <option value="">Selecione o vendedor</option>
+                </select>
+                <input type="text" id="tipoVenda" placeholder="Tipo de venda" required>
+                <button type="button" id="lupaDetalhes" class="btn-lupa" title="Expandir detalhes">🔍</button>
+              </div>
+              <div id="detalhesVenda" style="display:none;" class="grid-detalhes">
+                <textarea placeholder="Observação" rows="2"></textarea>
+                <input type="text" placeholder="Status">
+                <input type="text" placeholder="Ativado por">
+                <input type="text" placeholder="Confirmado por">
+                <input type="text" placeholder="Aquisição">
+                <input type="text" placeholder="Viabilidade">
+                <input type="date" id="dataVenda">
+                <input type="text" placeholder="Equipe">
+                <input type="text" placeholder="Nome completo">
+                <input type="text" placeholder="Nome da mãe">
+                <input type="date" placeholder="Data de nascimento">
+                <input type="text" placeholder="CPF/CNPJ">
+                <input type="text" placeholder="Razão social">
+                <input type="email" placeholder="Email">
+                <input type="text" placeholder="CEP">
+                <input type="text" placeholder="UF" maxlength="2">
+                <input type="text" placeholder="Endereço">
+                <input type="text" placeholder="Bairro">
+                <input type="text" placeholder="Cidade">
+                <input type="text" placeholder="N°">
+                <input type="text" placeholder="Complemento">
+                <input type="text" placeholder="Referência">
+                <input type="tel" placeholder="Telefone">
+                <input type="tel" placeholder="WhatsApp">
+                <input type="text" placeholder="Valor">
+                <input type="text" placeholder="Velocidade">
+                <input type="text" placeholder="Forma de pagamento">
+                <input type="date" placeholder="Vencimento">
+                <input type="date" placeholder="Data instalação">
+                <input type="text" placeholder="Contrato">
+                <input type="text" placeholder="Tipo de venda">
+                <input type="text" placeholder="Agendamento">
+                <input type="text" placeholder="Plano">
+                <input type="date" placeholder="Data ag.">
+              </div>
+              <button type="submit" class="btn-novo">Salvar Venda</button>
+            </form>
           </section>
-          <section id="secao-relatorios" class="secao">
-            <h2>Relatórios</h2>
-            <div class="lista"><p>Nenhum relatório gerado.</p></div>
-            <button class="btn-novo">+ Gerar Relatório</button>
-          </section>
-          <section id="secao-clientes-admin" class="secao">
-            <h2>Clientes</h2>
-            <div class="lista"><p>Nenhum cliente cadastrado.</p></div>
-            <button class="btn-novo">+ Novo Cliente</button>
-          </section>
-          <section id="secao-negocios-admin" class="secao">
-            <h2>Negócios</h2>
-            <div class="lista"><p>Nenhum negócio cadastrado.</p></div>
-            <button class="btn-novo">+ Novo Negócio</button>
-          </section>
-          <section id="secao-atividades-admin" class="secao">
-            <h2>Atividades</h2>
-            <div class="lista"><p>Nenhuma atividade registrada.</p></div>
-            <button class="btn-novo">+ Nova Atividade</button>
+
+          <!-- Relatório por Vendedor -->
+          <section id="secao-relatorio-vendedor" class="secao">
+            <h2>📊 Relatório de Vendas por Vendedor</h2>
+            <div class="filtros-relatorio">
+              <select id="selectVendedorRelatorio"></select>
+              <select id="selectMesRelatorio"></select>
+              <button id="btnGerarRelatorioVendedor" class="btn-novo">Gerar</button>
+            </div>
+            <div id="resultadoRelatorioVendedor" class="lista"></div>
           </section>
         </main>
       </div>
     </div>
+  </div>
 
+  <!-- MODAL ADICIONAR VENDEDOR -->
+  <div id="modalAdicionarVendedor" class="modal">
+    <div class="modal-content">
+      <span class="fechar-modal">&times;</span>
+      <h2>Adicionar Vendedor</h2>
+      <form id="formAdicionarVendedor">
+        <input type="text" id="novoNome" placeholder="Nome completo" required>
+        <input type="email" id="novoEmail" placeholder="Email" required>
+        <input type="text" id="novoEquipe" placeholder="Equipe" required>
+        <input type="text" id="novoUsuario" placeholder="Usuário" required>
+        <input type="password" id="novoSenha" placeholder="Senha" required>
+        <button type="submit" class="btn-novo">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL EXCLUIR VENDEDOR -->
+  <div id="modalExcluirVendedor" class="modal">
+    <div class="modal-content">
+      <span class="fechar-modal">&times;</span>
+      <h2>Excluir Vendedor</h2>
+      <select id="selectExcluirVendedor"></select>
+      <button id="btnConfirmarExclusao" class="btn-novo btn-excluir">Excluir</button>
+      <p id="msgExclusao"></p>
+    </div>
   </div>
 
   <script src="js/app.js"></script>
