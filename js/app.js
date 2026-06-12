@@ -6,20 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   const loginMsg = document.getElementById('loginMsg');
 
-  // Painéis
   const painelVendedor = document.getElementById('painelVendedor');
   const painelAdmin = document.getElementById('painelAdmin');
 
-  // Mensagens de boas-vindas
   const bemVindoVendedor = document.getElementById('bemVindoVendedor');
   const bemVindoAdmin = document.getElementById('bemVindoAdmin');
 
-  // Botões de logout
   const logoutVendedor = document.getElementById('logoutVendedor');
   const logoutAdmin = document.getElementById('logoutAdmin');
 
-  // ---------- USUÁRIOS SIMULADOS (hash SHA-256) ----------
-  // Senha: "1234" → hash: 03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4
+  // Verificação de elementos essenciais
+  if (!loginForm || !loginScreen || !appScreen || !painelVendedor || !painelAdmin) {
+    console.error('Erro: estrutura HTML incompleta. Verifique os IDs.');
+    return;
+  }
+
+  // ---------- USUÁRIOS SIMULADOS ----------
   const USUARIOS = {
     'admin': {
       hash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
@@ -33,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
       hash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
       role: 'vendedor'
     }
-    // Adicione mais conforme necessário
   };
 
   // ---------- FUNÇÃO DE HASH SHA-256 ----------
@@ -62,55 +63,59 @@ document.addEventListener('DOMContentLoaded', () => {
       const hash = await gerarHash(senhaDigitada);
       const usuarioEncontrado = USUARIOS[usuarioDigitado];
 
+      console.log('Usuário digitado:', usuarioDigitado);
+      console.log('Hash gerado:', hash);
+      console.log('Dados encontrados:', usuarioEncontrado);
+
       if (usuarioEncontrado && usuarioEncontrado.hash === hash) {
-        // Login bem-sucedido, redireciona conforme o papel
+        // Esconde tela de login e mostra container do app
         loginScreen.style.display = 'none';
         appScreen.style.display = 'block';
 
         if (usuarioEncontrado.role === 'admin') {
           painelAdmin.style.display = 'block';
           painelVendedor.style.display = 'none';
-          bemVindoAdmin.textContent = `Bem-vindo, ${usuarioDigitado} (Admin)!`;
+          if (bemVindoAdmin) bemVindoAdmin.textContent = `Bem-vindo, ${usuarioDigitado} (Admin)!`;
           ativarSecaoAdmin('home-admin');
+          console.log('Painel admin exibido');
         } else {
           painelVendedor.style.display = 'block';
           painelAdmin.style.display = 'none';
-          bemVindoVendedor.textContent = `Bem-vindo, ${usuarioDigitado}!`;
+          if (bemVindoVendedor) bemVindoVendedor.textContent = `Bem-vindo, ${usuarioDigitado}!`;
           ativarSecaoVendedor('home-vendedor');
+          console.log('Painel vendedor exibido');
         }
       } else {
         loginMsg.textContent = 'Usuário ou senha inválidos.';
+        console.log('Falha na autenticação');
       }
     } catch (erro) {
       loginMsg.textContent = 'Erro ao processar login.';
-      console.error(erro);
+      console.error('Erro no login:', erro);
     }
   });
 
-  // ---------- LOGOUT (vendedor) ----------
-  logoutVendedor.addEventListener('click', () => logout());
-  // ---------- LOGOUT (admin) ----------
-  logoutAdmin.addEventListener('click', () => logout());
+  // ---------- LOGOUT ----------
+  if (logoutVendedor) logoutVendedor.addEventListener('click', logout);
+  if (logoutAdmin) logoutAdmin.addEventListener('click', logout);
 
   function logout() {
-    // Oculta todos os painéis
     painelVendedor.style.display = 'none';
     painelAdmin.style.display = 'none';
-    // Mostra tela de login
     appScreen.style.display = 'none';
     loginScreen.style.display = 'block';
     loginForm.reset();
     loginMsg.textContent = '';
+    console.log('Logout realizado');
   }
 
-  // ---------- NAVEGAÇÃO DO MENU (VENDEDOR) ----------
+  // ---------- NAVEGAÇÃO (VENDEDOR) ----------
   const menuVendedor = document.querySelectorAll('#painelVendedor .sidebar a[data-section]');
   menuVendedor.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const secao = link.getAttribute('data-section');
       ativarSecaoVendedor(secao);
-      // Destacar link ativo
       menuVendedor.forEach(l => l.classList.remove('ativo'));
       link.classList.add('ativo');
     });
@@ -120,10 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const secoes = document.querySelectorAll('#painelVendedor .secao');
     secoes.forEach(sec => sec.classList.remove('ativa'));
     const secaoAtiva = document.getElementById(`secao-${id}`);
-    if (secaoAtiva) secaoAtiva.classList.add('ativa');
+    if (secaoAtiva) {
+      secaoAtiva.classList.add('ativa');
+      console.log('Seção vendedor ativada:', id);
+    } else {
+      console.error('Seção não encontrada:', `secao-${id}`);
+    }
   }
 
-  // ---------- NAVEGAÇÃO DO MENU (ADMIN) ----------
+  // ---------- NAVEGAÇÃO (ADMIN) ----------
   const menuAdmin = document.querySelectorAll('#painelAdmin .sidebar a[data-section]');
   menuAdmin.forEach(link => {
     link.addEventListener('click', (e) => {
@@ -139,7 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const secoes = document.querySelectorAll('#painelAdmin .secao');
     secoes.forEach(sec => sec.classList.remove('ativa'));
     const secaoAtiva = document.getElementById(`secao-${id}`);
-    if (secaoAtiva) secaoAtiva.classList.add('ativa');
+    if (secaoAtiva) {
+      secaoAtiva.classList.add('ativa');
+      console.log('Seção admin ativada:', id);
+    } else {
+      console.error('Seção não encontrada:', `secao-${id}`);
+    }
   }
 
 });
